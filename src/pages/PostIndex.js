@@ -15,7 +15,7 @@ const PostIndex = () => {
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
-        setCurrentUser(null); // Reset currentUser khi đóng modal
+        setCurrentUser(null); 
     };
 
     const handleDelete = async (id) => {
@@ -30,11 +30,11 @@ const PostIndex = () => {
 
     const handleUpdate = (user) => {
         setCurrentUser(user);
-        setIsShowModalAddNew(true); // Mở modal để cập nhật
+        setIsShowModalAddNew(true); 
     };
 
     const handleSave = async () => {
-        await fetchUsers(); // Gọi lại hàm fetchUsers để cập nhật danh sách
+        await fetchUsers(); 
     };
 
     const fetchUsers = async () => {

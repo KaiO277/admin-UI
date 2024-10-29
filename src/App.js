@@ -16,15 +16,13 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
   const location = useLocation();
 
-  // Lưu trạng thái đăng nhập vào localStorage sau khi đăng nhập thành công
   const handleLogin = (user) => {
     setUsername(user);
     setIsAuthenticated(true);
     localStorage.setItem('username', user);
-    localStorage.setItem('access_token', 'token_value'); // Thay 'token_value' bằng token thực nhận được từ API
+    localStorage.setItem('access_token', 'token_value'); 
   };
 
-  // Xóa localStorage và trạng thái khi đăng xuất
   const handleLogout = () => {
     setUsername(null);
     setIsAuthenticated(false);
@@ -36,7 +34,6 @@ function App() {
     <div>
       <Header username={username} onLogout={handleLogout} />
       <div className="d-flex" style={{ marginTop: '56px' }}>
-        {/* Ẩn Sidebar nếu đang ở trang Login */}
         {location.pathname !== '/login' && <Sidebar />}
         <div className="flex-grow-1 p-3">
           <Routes>

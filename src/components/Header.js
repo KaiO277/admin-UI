@@ -2,7 +2,7 @@
 import React from 'react';
 import logo from '../images/logo.png'
 
-const Header = ({ username }) => {
+const Header = ({ user }) => {
   return (
     <header className="bg-dark text-white p-3 d-flex justify-content-between align-items-center fixed-top" style={{ zIndex: 1000 }}>
       <div className="d-flex align-items-center">
@@ -10,7 +10,7 @@ const Header = ({ username }) => {
         <h4 className="m-0">Hope Horizon Admin</h4>
       </div>
       <div>
-        <span>Welcome, {username} !</span>
+        <span>Welcome, {user} !</span>
       </div>
     </header>
   );

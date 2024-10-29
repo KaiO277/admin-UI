@@ -1,33 +1,33 @@
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { postCreatePostCategories, updatePostCategories } from '../services/PostCategoriesService'; 
+import { podcastCreatePodcastAuthor, updatePodcastAuthor } from '../services/PodcastAuthorService'; 
 import { toast } from 'react-toastify';
 
-function ModalAddPostCate(props) {
+function ModalAddPodcastAuthor(props) {
     const { show, handleClose, onSave, currentUser } = props;
-    const [title, setTitle] = useState('');
+    const [name, setName] = useState('');
     const isUpdate = Boolean(currentUser); 
 
     useEffect(() => {
         if (currentUser) {
-            setTitle(currentUser.title);
+            setName(currentUser.name);
         } else {
-            setTitle(''); 
+            setName(''); 
         }
     }, [currentUser]);
 
     const handleSave = async () => {
         try {
             if (isUpdate) {
-                await updatePostCategories({ id: currentUser.id, title }); 
-                toast.success("Category updated successfully!");
+                await updatePodcastAuthor({ id: currentUser.id, name }); 
+                toast.success("Author updated successfully!");
             } else {
-                await postCreatePostCategories(title);
-                toast.success("A Category is created successfully!");
+                await podcastCreatePodcastAuthor(name);
+                toast.success("Author is created successfully!");
             }
             handleClose();
-            setTitle('');
+            setName('');
             onSave(); 
         } catch (error) {
             toast.error("Error: " + (error.response?.data?.detail || error.message));
@@ -37,17 +37,17 @@ function ModalAddPostCate(props) {
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>{isUpdate ? 'Update Category' : 'Add New Category'}</Modal.Title>
+                <Modal.Title>{isUpdate ? 'Update Author Podcast' : 'Add New Author Podcast'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className='body-add-new'>
                     <div className='mb-3'>
-                        <label className="form-label">Title</label>
+                        <label className="form-label">Name</label>
                         <input 
                             type='text' 
                             className='form-control' 
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </div>
                 </div>
@@ -64,4 +64,4 @@ function ModalAddPostCate(props) {
     );
 }
 
-export default ModalAddPostCate;
+export default ModalAddPodcastAuthor;

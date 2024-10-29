@@ -1,11 +1,11 @@
 import api from './api';
 
-// Lấy tất cả PostAuthor
+
 const fetchAllPostIndex = () => {
   return api.get('post/post_index_get_all_api/');
 };
 
-// Tạo mới PostIndex
+
 const postCreatePostIndex = async (formData) => {
   try {
     const response = await api.post('post/post_index_add_api/', formData, {
@@ -13,21 +13,35 @@ const postCreatePostIndex = async (formData) => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data; // Trả về dữ liệu từ phản hồi
+    return response.data; 
   } catch (error) {
     console.error("Error creating post index:", error);
-    throw error; // Ném lỗi để xử lý ở nơi khác
+    throw error; 
   }
 };
 
 const deletePostIndex = (id) => {
   return api.delete('post/post_index_delete_api/', {
-    data: { id: id } // Gửi dữ liệu trong thân yêu cầu
+    data: { id: id } 
   });
 };
 
-const updatePostIndex = ({ id, name }) => {
-  return api.patch('post/post_index_update_api/', { id, name }); // Sử dụng phương thức PUT
+const updatePostIndex = async (id, formData) => {
+  formData.append('id', id);  // Add the ID directly to formData
+
+  try {
+    const response = await api.patch('post/post_index_update_api/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating post index:", error);
+    throw error;
+  }
 };
+
+
 
 export { fetchAllPostIndex, postCreatePostIndex, deletePostIndex, updatePostIndex };

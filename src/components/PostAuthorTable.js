@@ -11,7 +11,7 @@ const PostAuthorTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Actions</th> {/* Thêm cột Actions */}
+                    <th>Actions</th> 
                 </tr>
             </thead>
             <tbody>
@@ -21,8 +21,8 @@ const PostAuthorTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                             <td>{index + 1}</td>
                             <td>{user.name}</td>
                             <td>
-                                <Button variant="warning" onClick={() => onUpdate(user)}>Update</Button> {/* Nút cập nhật */}
-                                <Button variant="danger" onClick={() => onDelete(user.id)}>Delete</Button> {/* Nút xóa */}
+                                <Button variant="warning" onClick={() => onUpdate(user)}>Update</Button> 
+                                <Button variant="danger" onClick={() => onDelete(user.id)}>Delete</Button> 
                             </td>
                         </tr>
                     ))

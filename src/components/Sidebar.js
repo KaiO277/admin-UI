@@ -1,21 +1,19 @@
-// src/components/Sidebar.js
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate để điều hướng
+import { Link, useNavigate } from 'react-router-dom'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Sidebar = () => {
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const navigate = useNavigate(); 
   const [postOpen, setPostOpen] = useState(false);
   const [podcastOpen, setPodcastOpen] = useState(false);
 
   const togglePost = () => setPostOpen(!postOpen);
   const togglePodcast = () => setPodcastOpen(!podcastOpen);
 
-  // Hàm xử lý đăng xuất
   const handleLogout = () => {
-    localStorage.removeItem('access_token'); // Xóa token khỏi localStorage
+    localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    navigate('/login'); // Điều hướng về trang đăng nhập
+    navigate('/login'); 
   };
 
   return (
@@ -25,7 +23,6 @@ const Sidebar = () => {
           <Link to="/home" className="nav-link text-white">Home</Link>
         </li>
 
-        {/* Post Dropdown */}
         <li className="nav-item mb-2">
           <a href="#" onClick={togglePost} className="nav-link text-white d-flex justify-content-between align-items-center">
             Post
@@ -46,7 +43,6 @@ const Sidebar = () => {
           )}
         </li>
 
-        {/* Podcast Dropdown */}
         <li className="nav-item mb-2">
           <a href="#" onClick={togglePodcast} className="nav-link text-white d-flex justify-content-between align-items-center">
             Podcast
@@ -67,7 +63,6 @@ const Sidebar = () => {
           )}
         </li>
 
-        {/* Logout Button */}
         <li className="nav-item mt-auto">
           <button onClick={handleLogout} className="nav-link text-white bg-dark border-0" style={{ cursor: 'pointer' }}>
             Logout

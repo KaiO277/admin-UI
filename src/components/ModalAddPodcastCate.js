@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { postCreatePostCategories, updatePostCategories } from '../services/PostCategoriesService'; 
+import { podcastCreatePodcastCategories, updatePodcastCategories } from '../services/PodcastCategoriesService'; 
 import { toast } from 'react-toastify';
 
-function ModalAddPostCate(props) {
+function ModalAddPodcastCate(props) {
     const { show, handleClose, onSave, currentUser } = props;
     const [title, setTitle] = useState('');
     const isUpdate = Boolean(currentUser); 
@@ -20,10 +20,10 @@ function ModalAddPostCate(props) {
     const handleSave = async () => {
         try {
             if (isUpdate) {
-                await updatePostCategories({ id: currentUser.id, title }); 
+                await updatePodcastCategories({ id: currentUser.id, title }); 
                 toast.success("Category updated successfully!");
             } else {
-                await postCreatePostCategories(title);
+                await podcastCreatePodcastCategories(title);
                 toast.success("A Category is created successfully!");
             }
             handleClose();
@@ -64,4 +64,4 @@ function ModalAddPostCate(props) {
     );
 }
 
-export default ModalAddPostCate;
+export default ModalAddPodcastCate;

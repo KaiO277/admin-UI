@@ -1,7 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-const PostCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
+const PodcastCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
@@ -36,4 +36,4 @@ const PostCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate }) 
     );
 };
 
-export default PostCategoriesTable;
+export default PodcastCategoriesTable;

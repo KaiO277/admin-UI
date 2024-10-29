@@ -1,37 +1,34 @@
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { postCreatePostAuthor, updatePostAuthor } from '../services/PostAuthorService'; // Đảm bảo bạn đã nhập hàm update
+import { postCreatePostAuthor, updatePostAuthor } from '../services/PostAuthorService'; 
 import { toast } from 'react-toastify';
 
 function ModalAddNew(props) {
     const { show, handleClose, onSave, currentUser } = props;
     const [name, setName] = useState('');
-    const isUpdate = Boolean(currentUser); // Kiểm tra xem có đang ở chế độ cập nhật không
+    const isUpdate = Boolean(currentUser); 
 
     useEffect(() => {
-        // Nếu có currentUser, điền vào tên
         if (currentUser) {
             setName(currentUser.name);
         } else {
-            setName(''); // Reset cho chế độ thêm mới
+            setName(''); 
         }
     }, [currentUser]);
 
     const handleSave = async () => {
         try {
             if (isUpdate) {
-                // Cập nhật tác giả
                 await updatePostAuthor({ id: currentUser.id, name }); 
                 toast.success("Author updated successfully!");
             } else {
-                // Tạo tác giả mới
                 await postCreatePostAuthor(name);
                 toast.success("A user is created successfully!");
             }
             handleClose();
             setName('');
-            onSave(); // Gọi hàm onSave để làm mới danh sách
+            onSave(); 
         } catch (error) {
             toast.error("Error: " + (error.response?.data?.detail || error.message));
         }

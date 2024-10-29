@@ -20,7 +20,6 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const editor = useRef(null);
 
-    // Load dữ liệu cho form khi có `currentUser`
     useEffect(() => {
         if (currentUser) {
             setTitle(currentUser.title || '');
@@ -29,7 +28,6 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
             setSelectedCategory(currentUser.category || null);
             setSelectedAuthor(currentUser.author || null);
         } else {
-            // Reset các trường khi tạo mới
             setTitle('');
             setTextShort('');
             setTextLong('');
@@ -39,7 +37,6 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
         }
     }, [currentUser]);
 
-    // Fetch categories and authors
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -58,7 +55,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
     }, []);
 
     const handleFileChange = (e) => {
-        setImage(e.target.files[0]); // Save the selected image file
+        setImage(e.target.files[0]); 
     };
 
     const handleSave = async () => {
@@ -77,6 +74,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
 
         try {
             if (currentUser) {
+                formData.append('id', currentUser.id);  // Append ID to formData for update
                 await updatePostIndex(currentUser.id, formData);
                 toast.success("Post updated successfully!");
             } else {
@@ -85,7 +83,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
             }
 
             handleClose();
-            onSave(); // Cập nhật danh sách bài viết
+            onSave(); 
         } catch (error) {
             toast.error("Error: " + (error.response?.data?.detail || error.message));
         }

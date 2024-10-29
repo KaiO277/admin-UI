@@ -15,8 +15,8 @@ const PostIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                     <th>Author Name</th>
                     <th>Post Title</th>
                     <th>Text short</th>
-                    <th>Text long</th>
-                    <th>Actions</th> {/* Thêm cột Actions */}
+                    <th>Image</th>
+                    <th>Actions</th> 
                 </tr>
             </thead>
             <tbody>
@@ -30,14 +30,14 @@ const PostIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                             <td>{user.text_short}</td>
                             <td>
                                 <img 
-                                    src={`${URL}${user.image_title}`} // Đảm bảo đường dẫn bao gồm cả thư mục và tên file
+                                    src={`${URL}${user.image_title}`} 
                                     alt="Thumbnail" 
                                     style={{ width: '150px', height: 'auto', objectFit: 'cover' }}
                                 />
                             </td>
                             <td>
-                                <Button variant="warning" onClick={() => onUpdate(user)}>Update</Button> {/* Nút cập nhật */}
-                                <Button variant="danger" onClick={() => onDelete(user.id)}>Delete</Button> {/* Nút xóa */}
+                                <Button variant="warning" onClick={() => onUpdate(user)}>Update</Button> 
+                                <Button variant="danger" onClick={() => onDelete(user.id)}>Delete</Button> 
                             </td>
                         </tr>
                     ))
