@@ -10,7 +10,7 @@ const Header = ({ username }) => {
         <h4 className="m-0">Hope Horizon Admin</h4>
       </div>
       <div>
-        <span>Welcome, {username}!</span>
+        <span>Welcome, {username} !</span>
       </div>
     </header>
   );

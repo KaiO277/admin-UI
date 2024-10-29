@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import URL from '../services/ip';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${URL}api/auth/login/`, {
+      const response = await axios.post(`${URL}api/auth/login_admin/`, {
         username,
         password,
       });
@@ -18,14 +19,13 @@ const LoginPage = () => {
       localStorage.setItem('refresh_token', response.data.refresh);
       window.location.href = '/home'; 
     } catch (error) {
-      setErrorMessage('Login failed: ' + (error.response?.data?.detail || 'Invalid credentials'));
+      toast.error('Login failed: ' + (error.response?.data?.detail || 'Invalid credentials'));
     }
   };
 
   return (
     <div className="container mt-5">
       <h2>Login</h2>
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <form onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="username">Username</label>
@@ -51,6 +51,7 @@ const LoginPage = () => {
         </div>
         <button type="submit" className="btn btn-primary">Login</button>
       </form>
+      <ToastContainer />
     </div>
   );
 };
