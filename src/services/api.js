@@ -1,8 +1,9 @@
 import axios from 'axios';
+import URL from './ip';
 
 // Khởi tạo axios với baseURL và các cấu hình mặc định
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: `${URL}api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -35,7 +36,7 @@ api.interceptors.response.use(
         try {
           // Gọi endpoint làm mới token
           const response = await axios.post(
-            'http://127.0.0.1:8000/api/auth/refresh/', 
+            `${URL}api/auth/refresh/`, 
             { refresh: refreshToken }
           );
 

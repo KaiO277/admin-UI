@@ -83,6 +83,4 @@ const PostAuthor = () => {
     );
 };
 
-// export default PostAuthor;
-
 export default PostAuthor;
