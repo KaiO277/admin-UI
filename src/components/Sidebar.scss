@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Sidebar Container */
 .sidebar {
     height: 100vh;
@@ -51,5 +52,27 @@
     .collapsed-sidebar .main-content {
       margin-left: 0;
     }
+=======
+/* Định dạng chung cho sidebar và các nút */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+  }
+  
+  .sidebar button {
+    padding: 10px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Đổi màu nút khi được chọn */
+  .nav-link.active-link {
+    background-color: #17a2b8;  // Màu cyan nhạt khi được chọn
+    color: white !important;
+>>>>>>> 85ed17afc4748660f638b1c6cd14a39117105eb5
   }
   
