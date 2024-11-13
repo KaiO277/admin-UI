@@ -34,6 +34,6 @@ const PodcastCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate 
             </tbody>
         </Table>
     );
-};
+}; 
 
 export default PodcastCategoriesTable;

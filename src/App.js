@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage';
 function App() {
   const [username, setUsername] = useState(localStorage.getItem('username') || null);
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
   const handleLogin = (user) => {
@@ -30,11 +31,15 @@ function App() {
     localStorage.removeItem('access_token');
   };
 
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
   return (
     <div>
-      <Header username={username} onLogout={handleLogout} />
-      <div className="d-flex" style={{ marginTop: '56px' }}>
-        {location.pathname !== '/login' && <Sidebar />}
+      {isAuthenticated && <Header username={username} onLogout={handleLogout} toggleSidebar={toggleSidebar} />}
+      <div className="d-flex" style={{ marginTop: isAuthenticated ? '56px' : '0' }}>
+        {isAuthenticated && location.pathname !== '/login' && (
+          <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        )}
         <div className="flex-grow-1 p-3">
           <Routes>
             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />

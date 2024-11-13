@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Sidebar.scss';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen }) => {
   const navigate = useNavigate(); 
   const [postOpen, setPostOpen] = useState(false);
   const [podcastOpen, setPodcastOpen] = useState(false);
@@ -17,7 +18,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="bg-dark text-white p-3" style={{ height: '100vh', width: '200px' }}>
+    <div className={`sidebar bg-dark text-white p-3 ${isOpen ? 'open' : ''}`}>
       <ul className="nav flex-column">
         <li className="nav-item mb-2">
           <Link to="/home" className="nav-link text-white">Home</Link>

@@ -60,7 +60,7 @@ const PostCategories = () => {
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
             <PostCategoriesTable
-                listUsers={listUsers.data} 
+                listUsers={listUsers } 
                 loading={loading} 
                 error={error} 
                 onDelete={handleDelete} 

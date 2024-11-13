@@ -1,0 +1,43 @@
+/* Header Styles */
+header {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  .d-flex {
+    display: flex;
+    align-items: center;
+  }
+  
+  .toggle-btn {
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 15px; /* Margin between icon and logo */
+  }
+  
+  .logo {
+    height: 30px;
+    margin-right: 10px;
+  }
+  
+  h4 {
+    margin-left: 15px; /* Space between logo and text */
+  }
+  
+  @media (max-width: 768px) {
+    .toggle-btn {
+      margin-right: 10px;
+    }
+  
+    .logo {
+      height: 25px;
+    }
+  }
+  
