@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import ModalAddPostIndex from '../components/ModalAddPostIndex';
+import ModalAddPodcastIndex from '../components/ModalAddPodcastIndex';
 import './PostAuthor.scss'
 import { ToastContainer, toast } from 'react-toastify';
 import { fetchAllPodcastIndex, deletePodcastIndex } from '../services/PodcastIndexService';
@@ -66,7 +66,7 @@ const PocastIndex = () => {
                 onDelete={handleDelete} 
                 onUpdate={handleUpdate} 
             />
-            <ModalAddPostIndex 
+            <ModalAddPodcastIndex 
                 show={isShowModalAddNew}
                 handleClose={handleClose}
                 onSave={handleSave}
