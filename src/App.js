@@ -34,13 +34,13 @@ function App() {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div>
+    <div className={isSidebarOpen ? "sidebar-open" : "collapsed-sidebar"}>
       {isAuthenticated && <Header username={username} onLogout={handleLogout} toggleSidebar={toggleSidebar} />}
       <div className="d-flex" style={{ marginTop: isAuthenticated ? '56px' : '0' }}>
         {isAuthenticated && location.pathname !== '/login' && (
           <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         )}
-        <div className="flex-grow-1 p-3">
+        <div className="main-content flex-grow-1 p-3">
           <Routes>
             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
             <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />

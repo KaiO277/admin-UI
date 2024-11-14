@@ -2,21 +2,33 @@
 .sidebar {
   height: 100vh;
   width: 200px;
-  transition: width 0.3s ease;
+  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  background-color: #343a40; /* Dark background */
-  overflow: hidden;
+  background-color: #343a40; /* Nền tối */
   position: fixed;
+  left: 0;
+  top: 0;
   z-index: 999;
 }
 
-/* Sidebar in collapsed state */
-.collapsed-sidebar .sidebar {
-  width: 0;
+/* Ẩn Sidebar khi thu gọn */
+.sidebar.collapsed {
+  transform: translateX(-100%);
 }
 
-/* Toggle Button */
+/* Nội dung chính - khi sidebar hiển thị */
+.main-content {
+  transition: margin-left 0.3s ease;
+  margin-left: 200px; /* Độ rộng sidebar */
+}
+
+/* Nội dung chính - khi sidebar bị ẩn */
+.sidebar.collapsed + .main-content {
+  margin-left: 0;
+}
+
+/* Nút Toggle để mở/đóng sidebar */
 .toggle-btn {
   position: absolute;
   top: 10px;
@@ -24,12 +36,7 @@
   z-index: 1000;
 }
 
-/* Adjust main content when sidebar is open */
-.sidebar.open + .main-content {
-  margin-left: 200px;
-}
-
-/* Navigation links */
+/* Các liên kết trong sidebar */
 .nav-link {
   font-size: 18px;
   color: #ffffff;
@@ -38,35 +45,29 @@
   transition: background-color 0.3s ease;
 }
 
-/* Hover effect for links */
+/* Hiệu ứng hover cho các liên kết */
 .nav-link:hover {
   color: #f1f1f1;
-  background-color: #495057; /* Slightly darker background on hover */
+  background-color: #495057;
 }
 
-/* Active link styling */
+/* Kiểu cho liên kết đang chọn */
 .nav-link.active-link {
-  background-color: #17a2b8; /* Cyan shade for active link */
+  background-color: #17a2b8;
   color: white !important;
 }
 
-/* Sidebar transition effects */
-.sidebar ul {
-  transition: all 0.3s ease;
-}
-
-/* Adjustments for small screens */
+/* Điều chỉnh cho màn hình nhỏ */
 @media screen and (max-width: 768px) {
   .sidebar {
-      position: fixed;
-      width: 0;
+    transform: translateX(-100%); /* Ẩn sidebar mặc định khi nhỏ hơn 768px */
   }
 
   .sidebar.open {
-      width: 200px;
+    transform: translateX(0); /* Hiển thị sidebar khi mở ở màn hình nhỏ */
   }
 
-  .collapsed-sidebar .main-content {
-      margin-left: 0;
+  .main-content {
+    margin-left: 0; /* Nội dung chiếm toàn bộ chiều rộng khi sidebar bị ẩn */
   }
 }
