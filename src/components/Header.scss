@@ -1,15 +1,18 @@
 /* Header Styles */
 header {
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-  }
+  position: fixed; /* Cố định header ở trên cùng */
+  top: 0;
+  left: 0;
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  z-index: 1000; /* Cao hơn các thành phần khác */
+  background-color: #343a40; /* Màu nền header */
+  color: white;
+  height: 60px; /* Chiều cao header */
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm hiệu ứng bóng */
+}
   
   .d-flex {
     display: flex;
