@@ -18,7 +18,7 @@ const PodcastCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate 
                 {listUsers && listUsers.length > 0 ? (
                     listUsers.map((user, index) => (
                         <tr key={user.id}>
-                            <td>{index + 1}</td>
+                            <td>{user.id}</td>
                             <td>{user.title}</td>
                             <td>
                                 <Button variant="warning" onClick={() => onUpdate(user)}>Update</Button> 

@@ -1,5 +1,8 @@
 import api from './api';
 
+const fetchAllPostCategoriesPagi = () => {
+  return api.get('post/post_cate_get_all_api_pagi/');
+};
 
 // Lấy tất cả PostAuthor
 const fetchAllPostCategories = () => {
@@ -28,5 +31,11 @@ const updatePostCategories = ({ id, title }) => {
   return api.patch('post/post_cate_update_api/', { id, title }); 
 };
 
-export { fetchAllPostCategories, postCreatePostCategories, deletePostCategories, updatePostCategories };
+export { 
+  fetchAllPostCategories, 
+  fetchAllPostCategoriesPagi, 
+  postCreatePostCategories, 
+  deletePostCategories, 
+  updatePostCategories 
+};
 
