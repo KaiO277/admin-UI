@@ -82,6 +82,11 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentUser }) {
             } else {
                 await postCreatePodcastIndex(formData);
                 toast.success("Podcast created successfully!");
+                setTitle('');
+                setImageTitle(null);
+                setContent(null);
+                setSelectedCategory(null);
+                setSelectedAuthor(null);
             }
 
             handleClose();

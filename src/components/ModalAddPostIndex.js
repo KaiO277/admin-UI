@@ -79,6 +79,12 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                 toast.success("Post updated successfully!");
             } else {
                 await postCreatePostIndex(formData);
+                setTitle('');
+                setTextShort('');
+                setTextLong('');
+                setImage(null);
+                setSelectedCategory(null);
+                setSelectedAuthor(null);
                 toast.success("Post created successfully!");
             }
 

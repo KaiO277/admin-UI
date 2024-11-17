@@ -3,7 +3,7 @@ import URL from './ip';
 
 // Khởi tạo axios với baseURL và các cấu hình mặc định
 const api = axios.create({
-  baseURL: `${URL}api`,
+  baseURL: `${URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },

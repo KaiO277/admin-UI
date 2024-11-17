@@ -17,7 +17,7 @@ const PodcastCategories = () => {
     // Trạng thái phân trang
     const [activePage, setActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [limit] = useState(2); // Số mục mỗi trang
+    const [limit] = useState(4); // Số mục mỗi trang
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
