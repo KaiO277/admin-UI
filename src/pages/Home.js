@@ -69,7 +69,7 @@ function Home() {
     setLoading(true);
     try{
       const res = await fetchAllPostAuthor();
-      setListPostAuthor(res.data);
+      setListPostAuthor(res.data.data);
     }catch (err){
       setError('Failed to fetch podcast. Please try again later.');
     }finally{

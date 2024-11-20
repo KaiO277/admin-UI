@@ -45,7 +45,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                     fetchAllPostAuthor()
                 ]);
                 setCategories(categoriesResponse.data);
-                setAuthors(authorsResponse.data);
+                setAuthors(authorsResponse.data.data);
             } catch (error) {
                 console.error("Error fetching data: ", error);
                 toast.error("Failed to load categories or authors");

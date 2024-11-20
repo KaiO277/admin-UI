@@ -3,6 +3,7 @@ import PostAuthorTable from '../components/PostAuthorTable';
 import Button from 'react-bootstrap/Button';
 import ModalAddNew from '../components/ModalAddNew';
 import './PostAuthor.scss'
+import Pagination from 'react-bootstrap/Pagination'; // Import Pagination from react-bootstrap
 import { ToastContainer, toast } from 'react-toastify';
 import { fetchAllPostAuthor, deletePostAuthor } from '../services/PostAuthorService';
 
@@ -12,6 +13,11 @@ const PostAuthor = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
+
+    // Trạng thái phân trang
+    const [activePage, setActivePage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [limit] = useState(4); // Số mục mỗi trang
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
@@ -53,6 +59,10 @@ const PostAuthor = () => {
         fetchUsers();
     }, []);
 
+    const handlePageChange = (page) => {
+        setActivePage(page);
+    };
+
     return (
         <div className='container'>
             <div className='headerName'>
@@ -60,12 +70,42 @@ const PostAuthor = () => {
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
             <PostAuthorTable 
-                listUsers={listUsers} 
+                listUsers={listUsers.data} 
                 loading={loading} 
                 error={error} 
                 onDelete={handleDelete} 
                 onUpdate={handleUpdate} 
             />
+
+            {/* Phân trang */}
+            <Pagination className="justify-content-center">
+                <Pagination.First
+                    onClick={() => handlePageChange(1)}
+                    disabled={activePage === 1}
+                />
+                <Pagination.Prev
+                    onClick={() => handlePageChange(activePage - 1)}
+                    disabled={activePage === 1}
+                />
+                {totalPages > 0 && [...Array(totalPages)].map((_, index) => (
+                    <Pagination.Item
+                        key={index + 1}
+                        active={index + 1 === activePage}
+                        onClick={() => handlePageChange(index + 1)}
+                    >
+                        {index + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => handlePageChange(activePage + 1)}
+                    disabled={activePage === totalPages}
+                />
+                <Pagination.Last
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={activePage === totalPages}
+                />
+            </Pagination>
+
             <ModalAddNew 
                 show={isShowModalAddNew}
                 handleClose={handleClose}
