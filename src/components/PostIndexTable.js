@@ -30,7 +30,7 @@ const PostIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                             <td>{user.text_short}</td>
                             <td>
                                 <img 
-                                    src={`${URL}${user.image_title}`} 
+                                    src={`${user.image_title}`} 
                                     alt="Thumbnail" 
                                     style={{ width: '150px', height: 'auto', objectFit: 'cover' }}
                                 />

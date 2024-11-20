@@ -44,7 +44,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                     fetchAllPostCategories(),
                     fetchAllPostAuthor()
                 ]);
-                setCategories(categoriesResponse.data);
+                setCategories(categoriesResponse.data.data);
                 setAuthors(authorsResponse.data.data);
             } catch (error) {
                 console.error("Error fetching data: ", error);
