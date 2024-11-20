@@ -20,15 +20,7 @@ const postUserGP = async (data) => {
 
 
 const fetchUserCount = (user_id, group_id) => {
-    const formData = new FormData();
-    formData.append('user_id', user_id);
-    formData.append('group_id', group_id);
-  
-    return api.post('/podcast/podcast_author_add_api/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    return api.get("user/user_get_count_api/")
   };
 
 // const postUserGP = () => {
