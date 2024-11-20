@@ -1,21 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import './Home.scss'
-import {fetchAllUser} from '../services/HomeService'
+import {fetchAllUser, fetchUserCount} from '../services/HomeService'
 import {fetchAllPodcastIndex} from '../services/PodcastIndexService'
 import {fetchAllPostIndex} from '../services/PostIndexService'
+import {fetchAllPodcastAuthor} from '../services/PodcastAuthorService'
+import {fetchAllPostAuthor} from '../services/PostAuthorService'
 
 function Home() {
   const [listUsers, setListUsers] = useState([]);
+  const [count, setCount] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [listPodcast, setListPodcast] = useState([]);
   const [listPost, setListPost] = useState([]);
+  const [listPostAuthor, setListPostAuthor] = useState([]);
+  const [listPodcastAuthor, setListPodcastAuthor] = useState([]);
+  
 
   const fetchUsers = async () => {
     setLoading(true);
     try {
         const res = await fetchAllUser();
         setListUsers(res.data);
+    } catch (err) {
+        setError('Failed to fetch authors. Please try again later.');
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  const fetchCount = async () => {
+    setLoading(true);
+    try {
+        const res = await fetchUserCount();
+        setCount(res.data.user_count);
     } catch (err) {
         setError('Failed to fetch authors. Please try again later.');
     } finally {
@@ -47,11 +65,39 @@ function Home() {
     }
   } 
 
+  const fetchPostAuthor = async () =>{
+    setLoading(true);
+    try{
+      const res = await fetchAllPostAuthor();
+      setListPostAuthor(res.data);
+    }catch (err){
+      setError('Failed to fetch podcast. Please try again later.');
+    }finally{
+      setLoading(false)
+    }
+  } 
+
+  const fetchPodcastAuthor = async () =>{
+    setLoading(true);
+    try{
+      const res = await fetchAllPodcastAuthor();
+      setListPodcastAuthor(res.data);
+    }catch (err){
+      setError('Failed to fetch podcast. Please try again later.');
+    }finally{
+      setLoading(false)
+    }
+  } 
+
   useEffect(() => {
     fetchUsers();
     fetchPodcast();
     fetchPost();
+    fetchPostAuthor();
+    fetchPodcastAuthor();
+    fetchCount();
   }, []);
+  
 
   return (
     <div className='container'>
@@ -61,7 +107,7 @@ function Home() {
         <div className="card bg-primary text-white">
           <div className="card-body pb-0 d-flex justify-content-between align-items-start">
             <div>
-              <div className="fs-4 fw-semibold">{listUsers.length}</div>
+              <div className="fs-4 fw-semibold">{count}</div>
               <div>Users</div>
             </div>
           </div>
@@ -97,8 +143,8 @@ function Home() {
         <div className="card bg-danger text-white">
           <div className="card-body pb-0 d-flex justify-content-between align-items-start">
             <div>
-              <div className="fs-4 fw-semibold">3.200</div>
-              <div>Revenue</div>
+              <div className="fs-4 fw-semibold">{parseInt(listPodcastAuthor.length, 10) + parseInt(listPostAuthor.length, 10)}</div>
+              <div>Author Post And Author Podcast</div>
             </div>
           </div>
         </div>

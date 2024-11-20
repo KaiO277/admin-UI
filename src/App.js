@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import PostAuthor from './pages/PostAuthor';
 import PostCategories from './pages/PostCategories';
 import PostIndex from './pages/PostIndex';
+import UserList from './pages/UserList';
 import PodcastAuthor from './pages/PodcastAuthor';
 import PodcastCategories from './pages/PodcastCategories';
 import PodcastIndex from './pages/PodcastIndex';
@@ -44,6 +45,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
             <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/user/list" element={isAuthenticated ? <UserList /> : <Navigate to="/login" />} />
             <Route path="/post/author" element={isAuthenticated ? <PostAuthor /> : <Navigate to="/login" />} />
             <Route path="/post/categories" element={isAuthenticated ? <PostCategories /> : <Navigate to="/login" />} />
             <Route path="/post/index" element={isAuthenticated ? <PostIndex /> : <Navigate to="/login" />} />

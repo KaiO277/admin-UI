@@ -17,6 +17,7 @@ const LoginPage = () => {
       });
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('roles', JSON.stringify(response.data.roles));
       window.location.href = '/home'; 
     } catch (error) {
       toast.error('Login failed: ' + (error.response?.data?.detail || 'Invalid credentials'));
