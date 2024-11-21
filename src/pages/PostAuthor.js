@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PostAuthorTable from '../components/PostAuthorTable';
 import Button from 'react-bootstrap/Button';
 import ModalAddNew from '../components/ModalAddNew';
-import './PostAuthor.scss'
-import Pagination from 'react-bootstrap/Pagination'; // Import Pagination from react-bootstrap
+import './PostAuthor.scss';
+import Pagination from 'react-bootstrap/Pagination';
 import { ToastContainer, toast } from 'react-toastify';
 import { fetchAllPostAuthor, deletePostAuthor } from '../services/PostAuthorService';
 
@@ -14,20 +14,19 @@ const PostAuthor = () => {
     const [error, setError] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
 
-    // Trạng thái phân trang
+    // Pagination state
     const [activePage, setActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [limit] = useState(4); // Số mục mỗi trang
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
-        setCurrentUser(null); 
+        setCurrentUser(null);
     };
 
     const handleDelete = async (id) => {
         try {
             await deletePostAuthor(id);
-            fetchUsers();
+            fetchUsers(activePage); // Reload current page
             toast.success("User deleted successfully!");
         } catch (error) {
             toast.error("Failed to delete user.");
@@ -36,20 +35,27 @@ const PostAuthor = () => {
 
     const handleUpdate = (user) => {
         setCurrentUser(user);
-        setIsShowModalAddNew(true); 
+        setIsShowModalAddNew(true);
     };
 
     const handleSave = async () => {
-        await fetchUsers(); 
+        await fetchUsers(activePage); // Reload current page
     };
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (page = 1) => {
         setLoading(true);
         try {
-            const res = await fetchAllPostAuthor();
-            setListUsers(res.data);
+            const res = await fetchAllPostAuthor(page);
+            const total = res.totalRows || 0;
+            const size = res.page_size || 4;
+            const currentPage = res.current_page || 1;
+            setListUsers(res.data || []);
+            setActivePage(currentPage);
+            setTotalPages(Math.ceil(total / size));
         } catch (err) {
             setError('Failed to fetch authors. Please try again later.');
+            setListUsers([]);
+            setTotalPages(1);
         } finally {
             setLoading(false);
         }
@@ -60,7 +66,9 @@ const PostAuthor = () => {
     }, []);
 
     const handlePageChange = (page) => {
-        setActivePage(page);
+        if (page !== activePage) {
+            fetchUsers(page);
+        }
     };
 
     return (
@@ -70,14 +78,14 @@ const PostAuthor = () => {
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
             <PostAuthorTable 
-                listUsers={listUsers.data} 
+                listUsers={listUsers} 
                 loading={loading} 
                 error={error} 
                 onDelete={handleDelete} 
                 onUpdate={handleUpdate} 
             />
 
-            {/* Phân trang */}
+            {/* Pagination */}
             <Pagination className="justify-content-center">
                 <Pagination.First
                     onClick={() => handlePageChange(1)}
@@ -87,7 +95,7 @@ const PostAuthor = () => {
                     onClick={() => handlePageChange(activePage - 1)}
                     disabled={activePage === 1}
                 />
-                {totalPages > 0 && [...Array(totalPages)].map((_, index) => (
+                {Array.from({ length: totalPages }, (_, index) => (
                     <Pagination.Item
                         key={index + 1}
                         active={index + 1 === activePage}

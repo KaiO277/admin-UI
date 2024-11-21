@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import ModalAddPostIndex from '../components/ModalAddPostIndex';
-import './PostAuthor.scss'
+import './PostAuthor.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import { fetchAllPostIndex, deletePostIndex } from '../services/PostIndexService';
 import Pagination from 'react-bootstrap/Pagination'; // Import Pagination from react-bootstrap
@@ -9,10 +9,10 @@ import PostIndexTable from '../components/PostIndexTable';
 
 const PostIndex = () => {
     const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
-    const [listUsers, setListUsers] = useState([]);
+    const [listPostIndex, setListPostIndex] = useState([]); // Đổi tên thành listPostIndex
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentPostIndex, setCurrentPostIndex] = useState(null);
 
     // Trạng thái phân trang
     const [activePage, setActivePage] = useState(1);
@@ -21,43 +21,46 @@ const PostIndex = () => {
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
-        setCurrentUser(null); 
+        setCurrentPostIndex(null); 
     };
 
     const handleDelete = async (id) => {
         try {
             await deletePostIndex(id);
-            fetchUsers();
-            toast.success("User deleted successfully!");
+            fetchPostIndexes(); // Sau khi xóa, gọi lại API để lấy dữ liệu mới
+            toast.success("Post Index deleted successfully!");
         } catch (error) {
-            toast.error("Failed to delete user.");
+            toast.error("Failed to delete post index.");
         }
     };
 
-    const handleUpdate = (user) => {
-        setCurrentUser(user);
+    const handleUpdate = (postIndex) => {
+        setCurrentPostIndex(postIndex);
         setIsShowModalAddNew(true); 
     };
 
     const handleSave = async () => {
-        await fetchUsers(); 
+        await fetchPostIndexes(); 
     };
 
-    const fetchUsers = async () => {
+    const fetchPostIndexes = async () => {
         setLoading(true);
         try {
-            const res = await fetchAllPostIndex();
-            setListUsers(res.data);
+            // Gọi API với tham số page
+            const res = await fetchAllPostIndex(activePage);
+            setListPostIndex(res.data); // Lưu dữ liệu
+            setTotalPages(Math.ceil(res.totalRows / limit)); // Tính tổng số trang
         } catch (err) {
-            setError('Failed to fetch authors. Please try again later.');
+            setError('Failed to fetch post indexes. Please try again later.');
         } finally {
             setLoading(false);
         }
     };
-
+    console.log(listPostIndex.data);
+    
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        fetchPostIndexes(); // Fetch dữ liệu khi component được mount
+    }, [activePage]); // Fetch lại khi activePage thay đổi
 
     // Hàm xử lý thay đổi trang
     const handlePageChange = (page) => {
@@ -70,16 +73,18 @@ const PostIndex = () => {
                 <h1>Danh Mục Bài Viết</h1>
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
+
+            {/* Hiển thị bảng Post Index */}
             <PostIndexTable
-                listUsers={listUsers.data} 
-                loading={loading} 
-                error={error} 
-                onDelete={handleDelete} 
-                onUpdate={handleUpdate} 
+                listPostIndex={listPostIndex} // Sử dụng listPostIndex thay vì listUsers
+                loading={loading}
+                error={error}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
             />
 
-                        {/* Phân trang */}
-                        <Pagination className="justify-content-center">
+            {/* Phân trang */}
+            <Pagination className="justify-content-center">
                 <Pagination.First
                     onClick={() => handlePageChange(1)}
                     disabled={activePage === 1}
@@ -107,12 +112,15 @@ const PostIndex = () => {
                 />
             </Pagination>
 
+            {/* Modal Add New */}
             <ModalAddPostIndex 
                 show={isShowModalAddNew}
                 handleClose={handleClose}
                 onSave={handleSave}
-                currentUser={currentUser}
+                currentPostIndex={currentPostIndex} // Đảm bảo truyền đúng dữ liệu
             />
+            
+            {/* Toast Notification */}
             <ToastContainer 
                 position="top-right" 
                 autoClose={5000} 

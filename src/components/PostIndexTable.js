@@ -2,9 +2,10 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import URL from '../services/ip';
 
-const PostIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
+
+const PostIndexTable = ({ listPostIndex, loading, error, onDelete, onUpdate }) => {
     if (loading) return <div>Loading...</div>;
-    if (error) return <div className="alert alert-danger">{error}</div>;
+    if (error) return <div className="alert alert-danger">{error}</div>;    
 
     return (
         <Table striped bordered hover>
@@ -20,8 +21,8 @@ const PostIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                 </tr>
             </thead>
             <tbody>
-                {listUsers && listUsers.length > 0 ? (
-                    listUsers.map((user, index) => (
+                {listPostIndex && listPostIndex.length > 0 ? (
+                    listPostIndex.map((user, index) => (
                         <tr key={user.id}>
                             <td>{index + 1}</td>
                             <td>{user?.post_cate?.title ? user.post_cate.title : null}</td>
@@ -30,7 +31,7 @@ const PostIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                             <td>{user.text_short}</td>
                             <td>
                                 <img 
-                                    src={`${user.image_title}`} 
+                                    src={`${URL}${user.image_title}`} 
                                     alt="Thumbnail" 
                                     style={{ width: '150px', height: 'auto', objectFit: 'cover' }}
                                 />

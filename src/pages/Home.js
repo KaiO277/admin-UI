@@ -143,7 +143,7 @@ function Home() {
         <div className="card bg-danger text-white">
           <div className="card-body pb-0 d-flex justify-content-between align-items-start">
             <div>
-              <div className="fs-4 fw-semibold">{parseInt(listPodcastAuthor.length, 10) + parseInt(listPostAuthor.length, 10)}</div>
+              {/* <div className="fs-4 fw-semibold">{parseInt(listPodcastAuthor.length, 10) + parseInt(listPostAuthor.length, 10)}</div> */}
               <div>Author Post And Author Podcast</div>
             </div>
           </div>
