@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PostAuthorTable from '../components/PodcastAuthorTable';
+import PodcastAuthorTable from '../components/PodcastAuthorTable';
 import Button from 'react-bootstrap/Button';
 import ModalAddPodcastAuthor from '../components/ModalAddPodcastAuthor';
 import './PostAuthor.scss';
@@ -73,7 +73,7 @@ const PodcastAuthor = () => {
             </div>
 
             {/* Hiển thị bảng Podcast Authors */}
-            <PostAuthorTable 
+            <PodcastAuthorTable 
                 listAuthors={listAuthors} // Đổi tên biến
                 loading={loading}
                 error={error}
