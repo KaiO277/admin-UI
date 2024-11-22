@@ -1,7 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-const PodcastCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
+const PodcastCategoriesTable = ({ categoriesList, loading, error, onDelete, onUpdate }) => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
@@ -15,8 +15,8 @@ const PodcastCategoriesTable = ({ listUsers, loading, error, onDelete, onUpdate 
                 </tr>
             </thead>
             <tbody>
-                {listUsers && listUsers.length > 0 ? (
-                    listUsers.map((user, index) => (
+                {categoriesList && categoriesList.length > 0 ? (
+                    categoriesList.map((user, index) => (
                         <tr key={user.id}>
                             <td>{user.id}</td>
                             <td>{user.title}</td>

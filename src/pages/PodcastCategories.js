@@ -4,16 +4,16 @@ import ModalAddPostCate from '../components/ModalAddPodcastCate';
 import './PostAuthor.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import { fetchAllPodcastCategoriesPagi, deletePodcastCategories } from '../services/PodcastCategoriesService';
-import PostCategoriesTable from '../components/PostCategoriesTable';
-import Pagination from 'react-bootstrap/Pagination'; // Import Pagination from react-bootstrap
+import PodcastCategoriesTable from '../components/PodcastCategoriesTable';
+import Pagination from 'react-bootstrap/Pagination';
 
 const PodcastCategories = () => {
     const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
-    const [listUsers, setListUsers] = useState([]);
+    const [categoriesList, setCategoriesList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [currentUser, setCurrentUser] = useState(null);
-    
+    const [currentCategory, setCurrentCategory] = useState(null);
+
     // Trạng thái phân trang
     const [activePage, setActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -21,68 +21,70 @@ const PodcastCategories = () => {
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
-        setCurrentUser(null); // Reset currentUser khi đóng modal
+        setCurrentCategory(null); // Reset khi đóng modal
     };
 
     const handleDelete = async (id) => {
         try {
             await deletePodcastCategories(id);
-            fetchUsers();
+            await fetchCategories(); // Tải lại danh sách sau khi xóa
             toast.success("Category deleted successfully!");
         } catch (error) {
             toast.error("Failed to delete category.");
         }
     };
 
-    const handleUpdate = (user) => {
-        setCurrentUser(user);
+    const handleUpdate = (category) => {
+        setCurrentCategory(category);
         setIsShowModalAddNew(true); // Mở modal để cập nhật
     };
 
     const handleSave = async () => {
-        await fetchUsers(); // Gọi lại hàm fetchUsers để cập nhật danh sách
+        await fetchCategories(); // Tải lại danh sách sau khi thêm/cập nhật
     };
 
-    // Sử dụng useCallback để tránh việc tái tạo lại hàm fetchUsers mỗi lần render
-    const fetchUsers = useCallback(async () => {
+    const fetchCategories = useCallback(async () => {
         setLoading(true);
-        
+        setError(''); // Xóa lỗi trước khi tải mới
+
         try {
-            const res = await fetchAllPodcastCategoriesPagi(activePage, limit); // Sử dụng activePage và limit
-            setListUsers(res.data);
-            setTotalPages(Math.ceil(res.totalRows / res.page_size)); // Tính tổng số trang
+            const res = await fetchAllPodcastCategoriesPagi(activePage, limit);
+            setCategoriesList(res.data); // Lưu danh sách thể loại
+            setTotalPages(Math.ceil(res.totalRows / res.page_size)); // Cập nhật tổng số trang
         } catch (err) {
             setError('Failed to fetch categories. Please try again later.');
         } finally {
             setLoading(false);
         }
-    }, [activePage, limit]); // fetchUsers chỉ thay đổi khi activePage hoặc limit thay đổi
+    }, [activePage, limit]);
 
-    // Sử dụng useEffect để gọi API khi activePage thay đổi
     useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers]); // Khi fetchUsers thay đổi, gọi lại useEffect
+        fetchCategories();
+    }, [fetchCategories]);
 
     // Hàm xử lý thay đổi trang
     const handlePageChange = (page) => {
-        setActivePage(page);
+        if (page > 0 && page <= totalPages) {
+            setActivePage(page);
+        }
     };
 
     return (
         <div className='container'>
             <div className='headerName'>
-                <h1>Categories</h1>
+                <h1>Podcast Categories</h1>
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
 
-            <PostCategoriesTable
-                listUsers={listUsers.data}
+            {/* Bảng hiển thị danh sách thể loại */}
+            {error && <div className="text-danger text-center my-3">{error}</div>}
+            <PodcastCategoriesTable
+                categoriesList={categoriesList}
                 loading={loading}
-                error={error}
                 onDelete={handleDelete}
                 onUpdate={handleUpdate}
             />
-            
+
             {/* Phân trang */}
             <Pagination className="justify-content-center">
                 <Pagination.First
@@ -93,7 +95,7 @@ const PodcastCategories = () => {
                     onClick={() => handlePageChange(activePage - 1)}
                     disabled={activePage === 1}
                 />
-                {totalPages > 0 && [...Array(totalPages)].map((_, index) => (
+                {Array.from({ length: totalPages }, (_, index) => (
                     <Pagination.Item
                         key={index + 1}
                         active={index + 1 === activePage}
@@ -112,13 +114,15 @@ const PodcastCategories = () => {
                 />
             </Pagination>
 
+            {/* Modal thêm hoặc cập nhật */}
             <ModalAddPostCate
                 show={isShowModalAddNew}
                 handleClose={handleClose}
                 onSave={handleSave}
-                currentUser={currentUser}
+                currentCategory={currentCategory}
             />
-            
+
+            {/* Toast Notification */}
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
