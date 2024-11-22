@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons'; 
 
 const Header = ({ user, toggleSidebar }) => {
+  const username = localStorage.getItem('username');
   return (
     <header className="bg-dark text-white p-3 d-flex justify-content-between align-items-center fixed-top" style={{ zIndex: 1000 }}>
       <div className="d-flex align-items-center">
@@ -15,7 +16,7 @@ const Header = ({ user, toggleSidebar }) => {
         <h4 className="m-0">Hope Horizon Admin</h4>
       </div>
       <div>
-        <span>Welcome, {user}!</span>
+        <span>Welcome, {username}!</span>
       </div>
     </header>
   );
