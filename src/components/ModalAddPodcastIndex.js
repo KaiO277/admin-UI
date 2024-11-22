@@ -39,7 +39,7 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentUser }) {
                     fetchAllPodcastAuthor()
                 ]);
                 setCategories(categoriesResponse.data);
-                setAuthors(authorsResponse.data.data);
+                setAuthors(authorsResponse.data);
             } catch (error) {
                 console.error("Error fetching data: ", error);
                 toast.error("Failed to load categories or authors");

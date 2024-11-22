@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import URL from '../services/ip';
 
-const PodcastIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
+const PodcastIndexTable = ({ podcastList, loading, error, onDelete, onUpdate }) => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
@@ -20,8 +20,8 @@ const PodcastIndexTable = ({ listUsers, loading, error, onDelete, onUpdate }) =>
                 </tr>
             </thead>
             <tbody>
-                {listUsers && listUsers.length > 0 ? (
-                    listUsers.map((user, index) => (
+                {podcastList && podcastList.length > 0 ? (
+                    podcastList.map((user, index) => (
                         <tr key={user.id}>
                             <td>{index + 1}</td>
                             <td>{user?.podcast_cate?.title ? user.podcast_cate.title : null}</td>
