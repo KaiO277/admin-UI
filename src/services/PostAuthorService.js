@@ -13,6 +13,10 @@ const fetchAllPostAuthor = async (page = 1) => {
   }
 };
 
+const fetchAllPostAuthorList = () => {
+  return api.get('post/post_author_get_all_api/');
+};
+
 // Tạo mới PostAuthor
 const postCreatePostAuthor = (name) => {
   const formData = new FormData();
@@ -35,5 +39,11 @@ const updatePostAuthor = ({ id, name }) => {
   return api.patch('/post/post_author_update_api/', { id, name }); // Sử dụng phương thức PUT
 };
 
-export { fetchAllPostAuthor, postCreatePostAuthor,  deletePostAuthor ,updatePostAuthor };
+export { 
+  fetchAllPostAuthor, 
+  postCreatePostAuthor,  
+  deletePostAuthor,
+  updatePostAuthor,
+  fetchAllPostAuthorList //dùng để phân trang
+};
 

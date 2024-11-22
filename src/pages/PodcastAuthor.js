@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import PostAuthorTable from '../components/PodcastAuthorTable';
 import Button from 'react-bootstrap/Button';
 import ModalAddPodcastAuthor from '../components/ModalAddPodcastAuthor';
-import './PostAuthor.scss'
-import Pagination from 'react-bootstrap/Pagination'; // Import Pagination from react-bootstrap
+import './PostAuthor.scss';
+import Pagination from 'react-bootstrap/Pagination';
 import { ToastContainer, toast } from 'react-toastify';
-import { fetchAllPodcastAuthor, deletePodcastAuthor } from '../services/PodcastAuthorService';
+import { fetchAllPodcastAuthorPagi, deletePodcastAuthor } from '../services/PodcastAuthorService';
 
 const PodcastAuthor = () => {
     const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
-    const [listUsers, setListUsers] = useState([]);
+    const [listAuthors, setListAuthors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentAuthor, setCurrentAuthor] = useState(null);
 
     // Trạng thái phân trang
     const [activePage, setActivePage] = useState(1);
@@ -21,33 +21,34 @@ const PodcastAuthor = () => {
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
-        setCurrentUser(null); 
+        setCurrentAuthor(null); // Reset khi đóng modal
     };
 
     const handleDelete = async (id) => {
         try {
             await deletePodcastAuthor(id);
-            fetchUsers();
-            toast.success("User deleted successfully!");
+            fetchAuthors(); // Tải lại dữ liệu sau khi xóa
+            toast.success("Author deleted successfully!");
         } catch (error) {
-            toast.error("Failed to delete user.");
+            toast.error("Failed to delete author.");
         }
     };
 
-    const handleUpdate = (user) => {
-        setCurrentUser(user);
-        setIsShowModalAddNew(true); 
+    const handleUpdate = (author) => {
+        setCurrentAuthor(author);
+        setIsShowModalAddNew(true); // Mở modal để cập nhật
     };
 
     const handleSave = async () => {
-        await fetchUsers(); 
+        await fetchAuthors(); // Tải lại dữ liệu sau khi thêm/cập nhật
     };
 
-    const fetchUsers = async () => {
+    const fetchAuthors = async () => {
         setLoading(true);
         try {
-            const res = await fetchAllPodcastAuthor();
-            setListUsers(res.data);
+            const res = await fetchAllPodcastAuthorPagi(activePage); // Gọi API với trang hiện tại
+            setListAuthors(res.data); // Cập nhật danh sách tác giả
+            setTotalPages(Math.ceil(res.totalRows / res.page_size)); // Tính tổng số trang
         } catch (err) {
             setError('Failed to fetch authors. Please try again later.');
         } finally {
@@ -56,8 +57,8 @@ const PodcastAuthor = () => {
     };
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        fetchAuthors(); // Lấy dữ liệu khi component được mount
+    }, [activePage]); // Tải lại dữ liệu khi trang thay đổi
 
     // Hàm xử lý thay đổi trang
     const handlePageChange = (page) => {
@@ -67,15 +68,17 @@ const PodcastAuthor = () => {
     return (
         <div className='container'>
             <div className='headerName'>
-                <h1>Author</h1>
+                <h1>Podcast Authors</h1>
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
+
+            {/* Hiển thị bảng Podcast Authors */}
             <PostAuthorTable 
-                listUsers={listUsers.data} 
-                loading={loading} 
-                error={error} 
-                onDelete={handleDelete} 
-                onUpdate={handleUpdate} 
+                listAuthors={listAuthors} // Đổi tên biến
+                loading={loading}
+                error={error}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
             />
 
             {/* Phân trang */}
@@ -107,12 +110,15 @@ const PodcastAuthor = () => {
                 />
             </Pagination>
 
+            {/* Modal Add New */}
             <ModalAddPodcastAuthor 
                 show={isShowModalAddNew}
                 handleClose={handleClose}
                 onSave={handleSave}
-                currentUser={currentUser}
+                currentAuthor={currentAuthor} // Truyền dữ liệu hiện tại cho modal
             />
+
+            {/* Toast Notification */}
             <ToastContainer 
                 position="top-right" 
                 autoClose={5000} 

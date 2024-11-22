@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Modal from 'react-bootstrap/Modal';
 import { fetchAllPostCategories } from '../services/PostCategoriesService';
-import { fetchAllPostAuthor } from '../services/PostAuthorService';
+import { fetchAllPostAuthorList } from '../services/PostAuthorService';
 import { postCreatePostIndex, updatePostIndex } from '../services/PostIndexService';
 import { toast } from 'react-toastify';
 import JoditEditor from "jodit-react";
@@ -42,9 +42,9 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
             try {
                 const [categoriesResponse, authorsResponse] = await Promise.all([
                     fetchAllPostCategories(),
-                    fetchAllPostAuthor()
+                    fetchAllPostAuthorList()
                 ]);
-                setCategories(categoriesResponse.data.data);
+                setCategories(categoriesResponse.data);
                 setAuthors(authorsResponse.data);
             } catch (error) {
                 console.error("Error fetching data: ", error);

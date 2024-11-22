@@ -70,7 +70,7 @@ const PostIndex = () => {
     return (
         <div className='container'>
             <div className='headerName'>
-                <h1>Danh Mục Bài Viết</h1>
+                <h1>List Post</h1>
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
 

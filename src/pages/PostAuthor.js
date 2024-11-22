@@ -74,7 +74,7 @@ const PostAuthor = () => {
     return (
         <div className='container'>
             <div className='headerName'>
-                <h1>Author</h1>
+                <h1>Post Author</h1>
                 <Button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add</Button>
             </div>
             <PostAuthorTable 
