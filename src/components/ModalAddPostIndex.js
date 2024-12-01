@@ -9,7 +9,7 @@ import { postCreatePostIndex, updatePostIndex } from '../services/PostIndexServi
 import { toast } from 'react-toastify';
 import JoditEditor from "jodit-react";
 
-function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
+function ModalAddPostIndex({ show, handleClose, onSave, currentPostIndex }) {
     const [title, setTitle] = useState('');
     const [textShort, setTextShort] = useState('');
     const [textLong, setTextLong] = useState('');
@@ -20,22 +20,27 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const editor = useRef(null);
 
+    const resetForm = () => {
+        setTitle('');
+        setTextShort('');
+        setTextLong('');
+        setImage(null);
+        setSelectedCategory(null);
+        setSelectedAuthor(null);
+    };
+
     useEffect(() => {
-        if (currentUser) {
-            setTitle(currentUser.title || '');
-            setTextShort(currentUser.text_short || '');
-            setTextLong(currentUser.text_long || '');
-            setSelectedCategory(currentUser.category || null);
-            setSelectedAuthor(currentUser.author || null);
+        if (currentPostIndex) {
+            setTitle(currentPostIndex.title || '');
+            setTextShort(currentPostIndex.text_short || '');
+            setTextLong(currentPostIndex.text_long || '');
+            setImage(currentPostIndex.image_title || null);
+            setSelectedCategory(currentPostIndex.post_cate || null);
+            setSelectedAuthor(currentPostIndex.post_author || null);
         } else {
-            setTitle('');
-            setTextShort('');
-            setTextLong('');
-            setImage(null);
-            setSelectedCategory(null);
-            setSelectedAuthor(null);
+            resetForm();
         }
-    }, [currentUser]);
+    }, [currentPostIndex]);
 
     useEffect(() => {
         const loadData = async () => {
@@ -47,7 +52,6 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                 setCategories(categoriesResponse.data);
                 setAuthors(authorsResponse.data);
             } catch (error) {
-                console.error("Error fetching data: ", error);
                 toast.error("Failed to load categories or authors");
             }
         };
@@ -55,11 +59,11 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
     }, []);
 
     const handleFileChange = (e) => {
-        setImage(e.target.files[0]); 
+        setImage(e.target.files[0]);
     };
 
     const handleSave = async () => {
-        if (!title || !textLong || !selectedCategory || !selectedAuthor || (!image && !currentUser?.image)) {
+        if (!title || !textLong || !selectedCategory || !selectedAuthor || (!image && !currentPostIndex?.image_title)) {
             toast.error("Please fill in all fields");
             return;
         }
@@ -68,28 +72,21 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
         formData.append('title', title);
         formData.append('text_short', textShort);
         formData.append('text_long', textLong);
-        if (image) formData.append('image_title', image);
+        formData.append('image_title', image || currentPostIndex?.image_title);
         formData.append('post_cate_id', selectedCategory.id);
         formData.append('post_author_id', selectedAuthor.id);
 
         try {
-            if (currentUser) {
-                formData.append('id', currentUser.id);  // Append ID to formData for update
-                await updatePostIndex(currentUser.id, formData);
+            if (currentPostIndex) {
+                await updatePostIndex(currentPostIndex.id, formData);
                 toast.success("Post updated successfully!");
             } else {
                 await postCreatePostIndex(formData);
-                setTitle('');
-                setTextShort('');
-                setTextLong('');
-                setImage(null);
-                setSelectedCategory(null);
-                setSelectedAuthor(null);
+                resetForm();
                 toast.success("Post created successfully!");
             }
-
             handleClose();
-            onSave(); 
+            onSave();
         } catch (error) {
             toast.error("Error: " + (error.response?.data?.detail || error.message));
         }
@@ -98,7 +95,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
     return (
         <Modal show={show} onHide={handleClose} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>{currentUser ? "Update Post" : "Add New Post"}</Modal.Title>
+                <Modal.Title>{currentPostIndex ? "Update Post" : "Add New Post"}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className='body-add-new'>
@@ -126,14 +123,18 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                             id="dropdown-basic-button" 
                             title={selectedCategory ? selectedCategory.title : "Select a category"}
                         >
-                            {categories.map((category) => (
-                                <Dropdown.Item 
-                                    key={category.id} 
-                                    onClick={() => setSelectedCategory(category)}
-                                >
-                                    {category.title}
-                                </Dropdown.Item>
-                            ))}
+                            {categories.length > 0 ? (
+                                categories.map((category) => (
+                                    <Dropdown.Item 
+                                        key={category.id} 
+                                        onClick={() => setSelectedCategory(category)}
+                                    >
+                                        {category.title}
+                                    </Dropdown.Item>
+                                ))
+                            ) : (
+                                <Dropdown.Item disabled>No categories available</Dropdown.Item>
+                            )}
                         </DropdownButton>
                     </div>
                     <div className='mb-3'>
@@ -142,14 +143,18 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                             id="dropdown-basic-button" 
                             title={selectedAuthor ? selectedAuthor.name : "Select an author"}
                         >
-                            {authors.map((author) => (
-                                <Dropdown.Item 
-                                    key={author.id} 
-                                    onClick={() => setSelectedAuthor(author)}
-                                >
-                                    {author.name}
-                                </Dropdown.Item>
-                            ))}
+                            {authors.length > 0 ? (
+                                authors.map((author) => (
+                                    <Dropdown.Item 
+                                        key={author.id} 
+                                        onClick={() => setSelectedAuthor(author)}
+                                    >
+                                        {author.name}
+                                    </Dropdown.Item>
+                                ))
+                            ) : (
+                                <Dropdown.Item disabled>No authors available</Dropdown.Item>
+                            )}
                         </DropdownButton>
                     </div>
                     <div className='mb-3'>
@@ -176,7 +181,7 @@ function ModalAddPostIndex({ show, handleClose, onSave, currentUser }) {
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleSave}>
-                    {currentUser ? "Update Post" : "Save Changes"}
+                    {currentPostIndex ? "Update Post" : "Save Changes"}
                 </Button>
             </Modal.Footer>
         </Modal>

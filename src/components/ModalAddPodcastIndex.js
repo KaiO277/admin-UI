@@ -8,170 +8,173 @@ import { fetchAllPodcastAuthor } from '../services/PodcastAuthorService';
 import { postCreatePodcastIndex, updatePodcastIndex } from '../services/PodcastIndexService';
 import { toast } from 'react-toastify';
 
-function ModalAddPodcastIndex({ show, handleClose, onSave, currentUser }) {
+function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState(null);
-    const [imageTitle, setImageTitle] = useState(null);  // Changed to imageTitle
+    const [audioFile, setAudioFile] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const [categories, setCategories] = useState([]);
     const [authors, setAuthors] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedAuthor, setSelectedAuthor] = useState(null);
 
-    useEffect(() => {
-        if (currentUser) {
-            setTitle(currentUser.title || '');
-            setSelectedCategory(currentUser.category || null);
-            setSelectedAuthor(currentUser.author || null);
-        } else {
-            setTitle('');
-            setImageTitle(null);
-            setContent(null);
-            setSelectedCategory(null);
-            setSelectedAuthor(null);
-        }
-    }, [currentUser]);
+    // Reset trạng thái
+    const resetForm = () => {
+        setTitle('');
+        setAudioFile(null);
+        setImageFile(null);
+        setSelectedCategory(null);
+        setSelectedAuthor(null);
+    };
 
+    // Load dữ liệu ban đầu
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [categoriesResponse, authorsResponse] = await Promise.all([
+                const [categoriesResponse, authorsResponse] = await Promise.all([ 
                     fetchAllPodcastCategories(),
-                    fetchAllPodcastAuthor()
+                    fetchAllPodcastAuthor(),
                 ]);
-                setCategories(categoriesResponse.data);
-                setAuthors(authorsResponse.data);
+                setCategories(categoriesResponse.data || []);
+                setAuthors(authorsResponse.data || []);
             } catch (error) {
-                console.error("Error fetching data: ", error);
-                toast.error("Failed to load categories or authors");
+                toast.error('Failed to load categories or authors');
             }
         };
         loadData();
     }, []);
 
+    // Đặt giá trị ban đầu khi mở modal
+    useEffect(() => {
+        if (currentPodcast) {
+            console.log("Editing podcast:", currentPodcast); // Debug xem giá trị currentPodcast
+            setTitle(currentPodcast.title || '');
+            setSelectedCategory(currentPodcast.podcast_cate || null);
+            setSelectedAuthor(currentPodcast.podcast_author || null);
+            setImageFile(null); // Reset ảnh tải lên (tránh ghi đè)
+            setAudioFile(null); // Reset audio tải lên
+        } else {
+            resetForm();
+        }
+    }, [currentPodcast]);
+
     const handleImageChange = (e) => {
-        setImageTitle(e.target.files[0]);  // Changed to imageTitle
+        setImageFile(e.target.files[0]);
     };
 
-    const handleContentChange = (e) => {
-        setContent(e.target.files[0]);
+    const handleAudioChange = (e) => {
+        setAudioFile(e.target.files[0]);
     };
 
     const handleSave = async () => {
-        if (!title || !content || !selectedCategory || !selectedAuthor || (!imageTitle && !currentUser?.image)) {
-            toast.error("Please fill in all fields");
+        if (!title || !selectedCategory || !selectedAuthor || (!imageFile && !currentPodcast?.image)) {
+            toast.error('Please fill in all required fields');
             return;
         }
 
         const formData = new FormData();
         formData.append('title', title);
-        formData.append('content', content);
-        if (imageTitle) formData.append('image_title', imageTitle);  // Changed to image_title
+        if (audioFile) formData.append('content', audioFile);
+        if (imageFile) formData.append('image_title', imageFile);
         formData.append('podcast_cate_id', selectedCategory.id);
         formData.append('podcast_author_id', selectedAuthor.id);
 
-        console.log("FormData to be sent:");
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
+        console.log([...formData.entries()]); // Debug dữ liệu gửi lên
 
         try {
-            if (currentUser) {
-                formData.append('id', currentUser.id);
-                await updatePodcastIndex(currentUser.id, formData);
-                toast.success("Podcast updated successfully!");
+            if (currentPodcast && currentPodcast.id) {
+                // Cập nhật podcast nếu đã có id
+                await updatePodcastIndex(currentPodcast.id, formData);
+                toast.success('Podcast updated successfully!');
             } else {
+                // Thêm mới podcast
                 await postCreatePodcastIndex(formData);
-                toast.success("Podcast created successfully!");
-                setTitle('');
-                setImageTitle(null);
-                setContent(null);
-                setSelectedCategory(null);
-                setSelectedAuthor(null);
+                toast.success('Podcast created successfully!');
+                resetForm();
             }
-
             handleClose();
-            onSave(); 
+            onSave(); // Reload data sau khi lưu
         } catch (error) {
-            console.error("Save Error:", error);
-            const errorMsg = error.response?.data?.detail || error.response?.data?.message || error.message;
-            toast.error("Error: " + errorMsg);
+            const errorMsg = error.response?.data?.detail || error.message;
+            toast.error(`Error: ${errorMsg}`);
         }
     };
 
     return (
-        <Modal show={show} onHide={handleClose} size="xl">
+        <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>{currentUser ? "Update Podcast" : "Add New Podcast"}</Modal.Title>
+                <Modal.Title>{currentPodcast ? 'Edit Podcast' : 'Add New Podcast'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className='body-add-new'>
-                    <div className='mb-3'>
-                        <label className="form-label">Title</label>
-                        <input 
-                            type='text' 
-                            className='form-control' 
+                <form>
+                    <div className="mb-3">
+                        <label htmlFor="title" className="form-label">Title</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
+                            required
                         />
                     </div>
-                    <div className='mb-3'>
-                        <label className="form-label">Category</label>
+
+                    <div className="mb-3">
+                        <label htmlFor="category" className="form-label">Category</label>
                         <DropdownButton 
-                            id="dropdown-basic-button" 
-                            title={selectedCategory ? selectedCategory.title : "Select a category"}
+                            id="category" 
+                            title={selectedCategory ? selectedCategory.title : "Select Category"} 
+                            onSelect={(id) => setSelectedCategory(categories.find(c => c.id === id))}
                         >
                             {categories.map((category) => (
-                                <Dropdown.Item 
-                                    key={category.id} 
-                                    onClick={() => setSelectedCategory(category)}
-                                >
+                                <Dropdown.Item key={category.id} eventKey={category.id}>
                                     {category.title}
                                 </Dropdown.Item>
                             ))}
                         </DropdownButton>
                     </div>
-                    <div className='mb-3'>
-                        <label className="form-label">Author</label>
+
+                    <div className="mb-3">
+                        <label htmlFor="author" className="form-label">Author</label>
                         <DropdownButton 
-                            id="dropdown-basic-button" 
-                            title={selectedAuthor ? selectedAuthor.name : "Select an author"}
+                            id="author" 
+                            title={selectedAuthor ? selectedAuthor.name : "Select Author"} 
+                            onSelect={(id) => setSelectedAuthor(authors.find(a => a.id === id))}
                         >
                             {authors.map((author) => (
-                                <Dropdown.Item 
-                                    key={author.id} 
-                                    onClick={() => setSelectedAuthor(author)}
-                                >
+                                <Dropdown.Item key={author.id} eventKey={author.id}>
                                     {author.name}
                                 </Dropdown.Item>
                             ))}
                         </DropdownButton>
                     </div>
-                    <div className='mb-3'>
-                        <label className="form-label">Image</label>
+
+                    <div className="mb-3">
+                        <label htmlFor="audio" className="form-label">Audio</label>
                         <input 
-                            type='file' 
-                            className='form-control' 
-                            accept="image/*"
-                            onChange={handleImageChange}
+                            type="file" 
+                            className="form-control" 
+                            id="audio" 
+                            onChange={handleAudioChange} 
                         />
                     </div>
-                    <div className='mb-3'>
-                        <label className="form-label">Audio File</label>
+
+                    <div className="mb-3">
+                        <label htmlFor="image" className="form-label">Image</label>
                         <input 
-                            type='file' 
-                            className='form-control' 
-                            accept="audio/*"
-                            onChange={handleContentChange}
+                            type="file" 
+                            className="form-control" 
+                            id="image" 
+                            onChange={handleImageChange} 
                         />
                     </div>
-                </div>
+                </form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleSave}>
-                    {currentUser ? "Update Podcast" : "Save Changes"}
+                    Save Changes
                 </Button>
             </Modal.Footer>
         </Modal>

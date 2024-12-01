@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Pagination from 'react-bootstrap/Pagination';
 import ModalAddPodcastIndex from '../components/ModalAddPodcastIndex';
-import './PostAuthor';
 import { ToastContainer, toast } from 'react-toastify';
 import { fetchAllPodcastIndexPagi, deletePodcastIndex } from '../services/PodcastIndexService';
 import PodcastIndexTable from '../components/PodcastIndexTable';

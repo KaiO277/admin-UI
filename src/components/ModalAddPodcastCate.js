@@ -30,7 +30,9 @@ function ModalAddPodcastCate(props) {
             setTitle('');
             onSave(); 
         } catch (error) {
-            toast.error("Error: " + (error.response?.data?.detail || error.message));
+            // Display error from the response
+            const errorMessage = error.response?.data?.error || error.message;
+            toast.error("Error: " + errorMessage);
         }
     };
 

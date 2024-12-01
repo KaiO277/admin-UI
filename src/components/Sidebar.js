@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen }) => {
             </a>
             {postOpen && (
               <ul className="nav flex-column ml-3 pl-3" style={{ borderLeft: '1px solid #ffffff33' }}>
-                {isSuperAdmin && (
+                {(
                   <li className="nav-item">
                     <Link to="/post/author" className="nav-link text-white">Author</Link>
                   </li>
@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen }) => {
             </a>
             {podcastOpen && (
               <ul className="nav flex-column ml-3 pl-3" style={{ borderLeft: '1px solid #ffffff33' }}>
-                {isSuperAdmin && (
+                {(
                   <li className="nav-item">
                     <Link to="/podcast/author" className="nav-link text-white">Author</Link>
                   </li>

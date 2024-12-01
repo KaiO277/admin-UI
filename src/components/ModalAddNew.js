@@ -30,7 +30,8 @@ function ModalAddNew(props) {
             setName('');
             onSave(); 
         } catch (error) {
-            toast.error("Error: " + (error.response?.data?.detail || error.message));
+            const errorMessage = error.response?.data?.error || error.message;
+            toast.error("Error: " + errorMessage);
         }
     };
 

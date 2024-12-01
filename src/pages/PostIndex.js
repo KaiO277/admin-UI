@@ -56,7 +56,7 @@ const PostIndex = () => {
             setLoading(false);
         }
     };
-    console.log(listPostIndex.data);
+    // console.log(listPostIndex.data);
     
     useEffect(() => {
         fetchPostIndexes(); // Fetch dữ liệu khi component được mount
