@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {fetchAllUser} from '../services/HomeService'
+import { fetchAllUser, removeUserGP } from '../services/HomeService';
 import UserTable from '../components/UserTable';
 import ModalAddGP from '../components/ModalAddGP';
 import Button from 'react-bootstrap/Button';
@@ -13,65 +13,86 @@ function UserList() {
 
     const handleClose = () => {
         setIsShowModalAddGP(false);
-        // setCurrentUser(null); // Reset currentUser khi đóng modal
     };
 
-    const handleUpdate = (user) => {
-        // setCurrentUser(user);
-        // setIsShowModalAddNew(true); 
+    const handleRemoveGroup = async (userId, groupId) => {
+        if (!userId || !groupId) {
+            toast.error("Please ensure both user and group are valid.");
+            return;
+        }
+
+        try {
+            const payload = { user_id: userId, group_id: groupId };
+            console.log("Removing user from group:", payload);
+
+            // Gọi API để xóa người dùng khỏi nhóm
+            await removeUserGP(payload);
+            toast.success("Group removed successfully!");
+            await fetchUsers(); // Làm mới danh sách người dùng sau khi xóa
+        } catch (error) {
+            console.error("Error: ", error);
+            toast.error("Failed to remove group. Please try again.");
+        }
     };
 
     const handleSave = async () => {
-        await fetchUsers(); 
+        await fetchUsers();
     };
 
     const fetchUsers = async () => {
         setLoading(true);
+        setError("");
         try {
             const res = await fetchAllUser();
             setListUsers(res.data.users);
         } catch (err) {
-            setError('Failed to fetch authors. Please try again later.');
+            console.error("Error fetching users: ", err);
+            setError("Failed to fetch users. Please try again later.");
         } finally {
             setLoading(false);
         }
-      };
+    };
 
-      useEffect(() => {
+    useEffect(() => {
         fetchUsers();
-      }, []);
+    }, []);
 
-      console.log(listUsers)
+    const handleUpdate = (user) => {
+        console.log("Update user", user);
+    };
 
-  return (
-    <div className='container'>
-        <div className='headerName'>
-            <h1>Users List</h1>
-            <Button className='btn btn-success' onClick={() => setIsShowModalAddGP(true)}>Add</Button>
-        </div>
+    return (
+        <div className="container">
+            <div className="headerName">
+                <h1>Users List</h1>
+                <Button className="btn btn-success" onClick={() => setIsShowModalAddGP(true)}>
+                    Add
+                </Button>
+            </div>
 
-        <UserTable
-                listUsers={listUsers} 
-                loading={loading} 
-                error={error} 
-                // onDelete={handleDelete} 
-                // onUpdate={handleUpdate} 
+            <UserTable
+                listUsers={listUsers}
+                loading={loading}
+                error={error}
+                onRemoveGroup={handleRemoveGroup}
+                onUpdate={handleUpdate}
             />
-        <ModalAddGP 
+
+            <ModalAddGP
                 show={isShowModalAddGP}
                 handleClose={handleClose}
                 onSave={handleSave}
-                // currentUser={currentUser}
-        />
-        <ToastContainer 
-                position="top-right" 
-                autoClose={5000} 
-                hideProgressBar={false} 
-                closeOnClick 
-                draggable 
-        />
-    </div>
-  )
+            />
+
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                closeOnClick
+                draggable
+            />
+        </div>
+    );
 }
 
-export default UserList
+export default UserList;

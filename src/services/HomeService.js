@@ -18,6 +18,22 @@ const postUserGP = async (data) => {
     return response;
 };
 
+const removeUserGP = async (payload) => {
+  try {
+    // Gọi API bằng phương thức DELETE mà không cần thêm `method: 'DELETE'`
+    const response = await api.delete('user/remove_user_to_group/', { data: payload });
+
+    if (!response.status === 200) {
+      throw new Error("Failed to remove user from group");
+    }
+
+    return response.data;  // Trả về dữ liệu từ API nếu thành công
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;  // Đẩy lỗi ra ngoài để xử lý ở nơi gọi hàm
+  }
+};
+
 
 const fetchUserCount = (user_id, group_id) => {
     return api.get("user/user_get_count_api/")
@@ -27,4 +43,4 @@ const fetchUserCount = (user_id, group_id) => {
 //     return api.post('user/add_user_to_group/')
 // }
 
-export { fetchAllUser, fetchUserCount, postUserGP, fetchAllListUsers, fetchAllListGroup}
+export { fetchAllUser, fetchUserCount, postUserGP, fetchAllListUsers, fetchAllListGroup, removeUserGP}

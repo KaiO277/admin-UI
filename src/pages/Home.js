@@ -15,6 +15,8 @@ function Home() {
   const [listPost, setListPost] = useState([]);
   const [listPostAuthor, setListPostAuthor] = useState([]);
   const [listPodcastAuthor, setListPodcastAuthor] = useState([]);
+  const role = localStorage.getItem('roles');
+  const displayRole = JSON.parse(role);
   
 
   const fetchUsers = async () => {
@@ -150,6 +152,7 @@ function Home() {
         </div>
       </div>
     </div>
+    <h3>Hi, You are <b>{displayRole}</b></h3>
     </div>
   )
 }

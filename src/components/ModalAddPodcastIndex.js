@@ -30,12 +30,12 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [categoriesResponse, authorsResponse] = await Promise.all([ 
+                const [categoriesResponse, authorsResponse] = await Promise.all([
                     fetchAllPodcastCategories(),
                     fetchAllPodcastAuthor(),
                 ]);
-                setCategories(categoriesResponse.data || []);
-                setAuthors(authorsResponse.data || []);
+                setCategories(categoriesResponse?.data || []);
+                setAuthors(authorsResponse?.data || []);
             } catch (error) {
                 toast.error('Failed to load categories or authors');
             }
@@ -46,23 +46,32 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
     // Đặt giá trị ban đầu khi mở modal
     useEffect(() => {
         if (currentPodcast) {
-            console.log("Editing podcast:", currentPodcast); // Debug xem giá trị currentPodcast
             setTitle(currentPodcast.title || '');
             setSelectedCategory(currentPodcast.podcast_cate || null);
             setSelectedAuthor(currentPodcast.podcast_author || null);
-            setImageFile(null); // Reset ảnh tải lên (tránh ghi đè)
-            setAudioFile(null); // Reset audio tải lên
+            setImageFile(null);
+            setAudioFile(null);
         } else {
             resetForm();
         }
     }, [currentPodcast]);
 
     const handleImageChange = (e) => {
-        setImageFile(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file && !['image/jpeg', 'image/png'].includes(file.type)) {
+            toast.error('Only JPG or PNG images are allowed');
+            return;
+        }
+        setImageFile(file);
     };
 
     const handleAudioChange = (e) => {
-        setAudioFile(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file && file.type !== 'audio/mpeg') {
+            toast.error('Only MP3 files are allowed');
+            return;
+        }
+        setAudioFile(file);
     };
 
     const handleSave = async () => {
@@ -78,23 +87,19 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
         formData.append('podcast_cate_id', selectedCategory.id);
         formData.append('podcast_author_id', selectedAuthor.id);
 
-        console.log([...formData.entries()]); // Debug dữ liệu gửi lên
-
         try {
             if (currentPodcast && currentPodcast.id) {
-                // Cập nhật podcast nếu đã có id
                 await updatePodcastIndex(currentPodcast.id, formData);
                 toast.success('Podcast updated successfully!');
             } else {
-                // Thêm mới podcast
                 await postCreatePodcastIndex(formData);
                 toast.success('Podcast created successfully!');
                 resetForm();
             }
             handleClose();
-            onSave(); // Reload data sau khi lưu
+            onSave();
         } catch (error) {
-            const errorMsg = error.response?.data?.detail || error.message;
+            const errorMsg = error.response?.data?.detail || error.message || 'An unknown error occurred';
             toast.error(`Error: ${errorMsg}`);
         }
     };
@@ -120,13 +125,13 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
 
                     <div className="mb-3">
                         <label htmlFor="category" className="form-label">Category</label>
-                        <DropdownButton 
-                            id="category" 
-                            title={selectedCategory ? selectedCategory.title : "Select Category"} 
-                            onSelect={(id) => setSelectedCategory(categories.find(c => c.id === id))}
+                        <DropdownButton
+                            id="category"
+                            title={selectedCategory ? selectedCategory.title : "Select Category"}
+                            onSelect={(id) => setSelectedCategory(categories.find(c => c.id === Number(id)))}
                         >
                             {categories.map((category) => (
-                                <Dropdown.Item key={category.id} eventKey={category.id}>
+                                <Dropdown.Item key={`category-${category.id}`} eventKey={category.id}>
                                     {category.title}
                                 </Dropdown.Item>
                             ))}
@@ -135,13 +140,13 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
 
                     <div className="mb-3">
                         <label htmlFor="author" className="form-label">Author</label>
-                        <DropdownButton 
-                            id="author" 
-                            title={selectedAuthor ? selectedAuthor.name : "Select Author"} 
-                            onSelect={(id) => setSelectedAuthor(authors.find(a => a.id === id))}
+                        <DropdownButton
+                            id="author"
+                            title={selectedAuthor ? selectedAuthor.name : "Select Author"}
+                            onSelect={(id) => setSelectedAuthor(authors.find(a => a.id === Number(id)))}
                         >
                             {authors.map((author) => (
-                                <Dropdown.Item key={author.id} eventKey={author.id}>
+                                <Dropdown.Item key={`author-${author.id}`} eventKey={author.id}>
                                     {author.name}
                                 </Dropdown.Item>
                             ))}
@@ -150,21 +155,21 @@ function ModalAddPodcastIndex({ show, handleClose, onSave, currentPodcast }) {
 
                     <div className="mb-3">
                         <label htmlFor="audio" className="form-label">Audio</label>
-                        <input 
-                            type="file" 
-                            className="form-control" 
-                            id="audio" 
-                            onChange={handleAudioChange} 
+                        <input
+                            type="file"
+                            className="form-control"
+                            id="audio"
+                            onChange={handleAudioChange}
                         />
                     </div>
 
                     <div className="mb-3">
                         <label htmlFor="image" className="form-label">Image</label>
-                        <input 
-                            type="file" 
-                            className="form-control" 
-                            id="image" 
-                            onChange={handleImageChange} 
+                        <input
+                            type="file"
+                            className="form-control"
+                            id="image"
+                            onChange={handleImageChange}
                         />
                     </div>
                 </form>

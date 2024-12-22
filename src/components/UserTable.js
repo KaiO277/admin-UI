@@ -1,7 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-const UserTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
+const UserTable = ({ listUsers, loading, error, onRemoveGroup }) => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
@@ -24,19 +24,23 @@ const UserTable = ({ listUsers, loading, error, onDelete, onUpdate }) => {
                             <td>{user.username}</td>
                             <td>{user.email}</td>
                             <td>
-                            {user.groups.length > 0
-                                ? user.groups.map((group) => group.name).join(", ")
-                                : "No groups"}
+                                {user.groups.length > 0
+                                    ? user.groups.map((group) => group.name).join(", ")
+                                    : "No groups"}
                             </td>
                             <td>
-                                <Button variant="warning" onClick={() => onUpdate(user)}>Update</Button> 
-                                <Button variant="danger" onClick={() => onDelete(user.id)}>Delete</Button> 
+                                <Button 
+                                    variant="danger" 
+                                    onClick={() => onRemoveGroup(user.id, user.groups[0].id)} // Truyền đúng userId và groupId
+                                >
+                                    Remove Group
+                                </Button>
                             </td>
                         </tr>
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="3" className="text-center">No authors found</td>
+                        <td colSpan="3" className="text-center">No users found</td>
                     </tr>
                 )}
             </tbody>
